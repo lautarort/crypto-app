@@ -31,10 +31,17 @@ function App() {
       )
     })
 
-  const filteredCoins = listOfCoins.filter((coin) => {
-    return coin.name.toLowerCase().includes(searchWord.toLowerCase())
-  });
+  const filteredCoins = listOfCoins
+    .slice(pagesVisited, pagesVisited + coinsPerPage)
+    .filter((coin) => {
+      return coin.name.toLowerCase().includes(searchWord.toLowerCase())
+    });
 
+  const pageCount = Math.ceil(listOfCoins.length / coinsPerPage);
+
+  const changePage = ({ selected }) => {
+    setPageNumber(selected)
+  }
 
   return (
     <div className="App">
@@ -46,6 +53,7 @@ function App() {
         />
       </div>
       <div className="cryptoDisplay">
+
         {filteredCoins.map((coin) => {
           return <Coin
             name={coin.name}
@@ -53,7 +61,19 @@ function App() {
             price={coin.price}
             symbol={coin.symbol}
           />;
+
         })}
+        <ReactPaginate
+          previousLabel={"Previous"}
+          nextLabel={"Next"}
+          pageCount={pageCount}
+          onPageChange={changePage}
+          containerClassName={"paginationBttns"}
+          previousLinkClassName={"previousBttn"}
+          nextLinkClassName={"nextBttn"}
+          disabledClassName={"paginationDisabled"}
+          activeClassName={"paginationActive"}
+        />
       </div>
     </div>
   );
